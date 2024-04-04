@@ -29,7 +29,7 @@ const Header = () => {
             <Button className='w-12 h-10 hidden sm:block' color='gray'>
                 <FaMoon />
             </Button>
-            <Link to="?sign-in">
+            <Link to="/sign-in">
                 <Button
                  outline
                 gradientDuoTone='purpleToBlue'>

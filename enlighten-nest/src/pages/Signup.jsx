@@ -31,6 +31,8 @@ const Signup = () => {
       const data = await res.json();
       if(data.success === false){
         setLoading(false);
+        console.log(data);
+        console.log(data.message);
         return setErrormessage(data.message);
       }
       setLoading(false);
@@ -39,6 +41,7 @@ const Signup = () => {
       }
     }
     catch(e){
+      
       setError(e.message);
       setLoading(false);
     }

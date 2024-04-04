@@ -33,9 +33,11 @@ export const Signin = async (req,res,next)=>{
      }
      try{
           const validUser = await User.findOne({email});
+          console.log(validUser);
           if(!validUser){
                return next(error(404,'User not found.'));
           }
+          console.log(password);
           const validPassword =bcryptjs.compareSync(password, validUser.password);
           if(!validPassword){
                return next(error(400, 'Invalid Password'));
@@ -52,6 +54,44 @@ export const Signin = async (req,res,next)=>{
      }catch(e){
           next(e);
      }
+}
+export const Google = async (req, res,next)=>{
+     const {name, email, googlePhotoUrl} = req.body;
+     console.log("name ="+name);
+     try{
+          const user = await User.findOne({email});
+          if(user){
+               const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+               const {password, ...rest} = user._doc;
+               res.status(200).cookie('access_token', token, {
+                    httpOnly: true,
+               }).json(rest);
+          }
+          else{
+               const generatedPassword = Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8);
+               
+               const hashedPassword = bcryptjs.hashSync(generatedPassword,10);
+              
+               const newUser = new User({
+                    username: name.toLowerCase().split(' ').join('')+Math.random().toString(9).slice(-4),
+                    email,
+                    password: hashedPassword,
+                    profilePic: googlePhotoUrl
+               });
+               await newUser.save();
+               const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET);
+               const {password, ...rest} = newUser._doc;
+               res
+                    .status(200)
+                    .cookie('access_token',token,{
+                         httpOnly: true,
+                    })
+                    .json(rest);
+          }
+     } catch(e){
+          next(e);
+     }
+     
 }
 
 export default Signup;
