@@ -7,6 +7,7 @@ export const test = (req,res)=>{
 }
 
 export const updateUser = async (req,res, next)=>{
+    console.log(req.body);
     if(req.user.id !== req.params.userId){
         return next(error(403, 'You are not allowed to update this user'));
     }
@@ -26,6 +27,7 @@ export const updateUser = async (req,res, next)=>{
         if(req.body.username!== req.body.username.toLowerCase()){
             return next(error(400, 'username should be in lowercase'));
         }
+    }
         try{
             const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
                 $set: {
@@ -42,7 +44,7 @@ export const updateUser = async (req,res, next)=>{
         catch(e){
             next(e);
         }
-    }
+    
 }
 
 export default test;
