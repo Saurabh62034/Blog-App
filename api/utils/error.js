@@ -7,4 +7,4 @@ const error = (statusCode, message) => {
     return err;
 }
 
-export default error
+export default error;
