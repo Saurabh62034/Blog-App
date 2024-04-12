@@ -7,7 +7,7 @@ export const test = (req,res)=>{
 }
 
 export const updateUser = async (req,res, next)=>{
-    console.log(req.body);
+    console.log("update body :"+Object.keys(req.body));
     if(req.user.id !== req.params.userId){
         return next(error(403, 'You are not allowed to update this user'));
     }
@@ -29,6 +29,7 @@ export const updateUser = async (req,res, next)=>{
         }
     }
         try{
+            console.log("update: "+ req.body.email);
             const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
                 $set: {
                     username: req.body.username,
@@ -44,6 +45,20 @@ export const updateUser = async (req,res, next)=>{
         catch(e){
             next(e);
         }
+    
+}
+
+export const deleteUser = async (req,res,next)=>{
+    if(req.user.id !== req.params.userId){
+        return next(errorHandler(403, 'you are not allowed to delete this user'));
+    }
+    try{
+        await User.findByIdAndDelete(req.params.userId) 
+        res.status(200).json('User has been deleted.');
+    }
+    catch(err){
+        next(err);
+    }
     
 }
 
