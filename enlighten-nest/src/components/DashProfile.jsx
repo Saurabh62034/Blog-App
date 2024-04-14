@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Alert, Button, TextInput} from 'flowbite-react';
+import {Alert, Button, Modal, ModalBody, TextInput} from 'flowbite-react';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import {app} from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateFailure, updateSuccess, updateStart } from '../redux/user/userSlice';
+import { updateFailure, updateSuccess, updateStart, deleteUserStart, deleteUserSuccess, deleteUserfailure } from '../redux/user/userSlice';
+import {HiOutlineExclamationCircle} from 'react-icons/hi'
 
 const DashProfile = () => {
   /*rules_version = '2';
@@ -24,13 +25,17 @@ service firebase.storage {
   }
 } */
   const dispatch = useDispatch();
-  const {currentUser} = useSelector(state => state.user);
+  const {currentUser, error} = useSelector(state => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileURL, setImageFileURL] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [userUpdateSuccess, setUserUpdateSuccess] = useState(null);
+  const [userUpdateError, setUserUpdateError] = useState(null);
+  const [showModel, setShowModel] = useState(false);
   const [errormessage, setErrorMessage] = useState('');
+  const filePickerRef = useRef();
 
   console.log(imageUploadProgress, imageUploadError);
   if(imageUploadProgress==100){
@@ -41,9 +46,7 @@ service firebase.storage {
     const file = e.target.files[0]
     setImageFile(file);
     setImageFileURL(URL.createObjectURL(file));
-
   }
-  const filePickerRef = useRef();
 
   useEffect(()=>{
     if(imageFile){
@@ -88,7 +91,10 @@ service firebase.storage {
 
   const handleUpdate = async (e)=>{
     e.preventDefault();
+    setUserUpdateError(null);
+    setUserUpdateSuccess(null);
     if(Object.keys(formData).length === 0){
+      setUserUpdateError('No changes made');
       return;
     }
     try{
@@ -101,14 +107,38 @@ service firebase.storage {
       const data = await res.json();
       if(!res.ok){
         dispatch(updateFailure(data.message));
+        setUserUpdateError(data.message);
       }
       else{
         dispatch(updateSuccess(data));
+        setUserUpdateSuccess('Profile updated successfully');
       }
     }
     catch(e){
       console.log("error is: "+ e);
     }
+  }
+
+  const handleDeleteUser = async ()=>{
+    setShowModel(false);
+    try{
+      dispatch(deleteUserStart());
+      const res = await fetch(`api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if(!res.ok){
+        dispatch(deleteUserfailure(data.message));
+      }
+      else{
+        dispatch(deleteUserSuccess());
+      }
+    }
+    catch(e){
+      dispatch(deleteUserfailure(e.message));
+      
+    }
+
   }
 
   return (
@@ -147,11 +177,38 @@ service firebase.storage {
         <Button type='submit' gradientDuoTone='purpleToBlue' outline>
           Update
         </Button>
-        <div className='text-red-500 flex justify-between mt-5'>
-          <span className='cursor-pointer'>Delete Account</span>
+        
+        
+      </form>
+      <div className='text-red-500 flex justify-between mt-5'>
+          <span onClick={()=>{setShowModel(true)}} className='cursor-pointer'>Delete Account</span>
           <span className='cursor-pointer'>Sign out</span>
         </div>
-      </form>
+        {userUpdateSuccess && (
+          <Alert color='success'>{userUpdateSuccess}</Alert>
+        )}
+        {userUpdateError && (
+          <Alert color='failure'>{userUpdateError}</Alert>
+        )}
+        {error && (
+          <Alert color='failure'>{error}</Alert>
+        )}
+        <Modal show={showModel} onClose={()=>setShowModel(false)} popup size="md">
+          <Modal.Header />
+          <Modal.Body>
+            <div className='text-center'>
+              <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark: text-gray-200 mx-auto mb-4' />
+              <h3 className='mb-5 mx-auto text-lg'>Are you sure, you want to delete your account?</h3>
+              <div className='flex justify-center gap-4'>
+                <Button color='failure' onClick={handleDeleteUser}>Yes</Button>
+
+                <Button color='blue' onClick={()=>setShowModel(false)}>No</Button>
+                
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer />
+        </Modal>
     </div>
   )
 }
