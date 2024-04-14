@@ -12,7 +12,7 @@ const Signup = async (req,res,next)=>{
      }
      const hashedPassword = bcryptjs.hashSync(password, 10);
      const user = new User({
-          email,
+          username,
           email,
           password: hashedPassword
      });
