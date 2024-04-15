@@ -18,7 +18,11 @@ const userSchema= new mongoose.Schema({
     profilePic: {
         type: String,
         default: "https://cdn.pixabay.com/photo/2016/12/10/05/16/profile-1896698_1280.jpg"
-    }
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
     
 }, {timestamps: true});
 

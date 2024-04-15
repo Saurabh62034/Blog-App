@@ -6,7 +6,9 @@ import {app} from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { updateFailure, updateSuccess, updateStart, deleteUserStart, deleteUserSuccess, deleteUserfailure, signoutSuccess } from '../redux/user/userSlice';
-import {HiOutlineExclamationCircle} from 'react-icons/hi'
+import {HiOutlineExclamationCircle} from 'react-icons/hi';
+import { Spinner } from 'flowbite-react';
+import { Link } from 'react-router-dom';
 
 const DashProfile = () => {
   /*rules_version = '2';
@@ -25,7 +27,7 @@ service firebase.storage {
   }
 } */
   const dispatch = useDispatch();
-  const {currentUser, error} = useSelector(state => state.user);
+  const {currentUser, error, loading} = useSelector(state => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileURL, setImageFileURL] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
@@ -192,10 +194,25 @@ service firebase.storage {
 
         <TextInput type='password' id='password' placeholder='password' onChange={handleChange} />
 
-        <Button type='submit' gradientDuoTone='purpleToBlue' outline>
-          Update
+        <Button type='submit' gradientDuoTone='purpleToBlue' outline disabled={loading}>
+          {loading? (
+          <>
+            <Spinner />
+            <span>Loading...</span>
+          </>
+          ): 'Update'}
+          
         </Button>
-        
+        {
+          currentUser.isAdmin && (
+            <Link to='/create-post'>
+              <Button type='button'      gradientDuoTone='purpleToPink'
+              className='w-full'>
+                Create a post
+              </Button>
+            </Link>
+          )
+        }
         
       </form>
       <div className='text-red-500 flex justify-between mt-5'>

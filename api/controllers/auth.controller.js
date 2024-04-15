@@ -26,25 +26,22 @@ const Signup = async (req,res,next)=>{
 }
 
 export const Signin = async (req,res,next)=>{
-     console.log("signin invoked: "+req.body);
      const {email, password} = req.body;
      if(!email || !password || email==='' || password===''){
           return next(error(400, 'All fields are required'));
      }
      try{
           const validUser = await User.findOne({email});
-          console.log(validUser);
           if(!validUser){
                return next(error(404,'User not found.'));
           }
-          console.log(password);
           const validPassword =bcryptjs.compareSync(password, validUser.password);
           if(!validPassword){
                return next(error(400, 'Invalid Password'));
           }
 
           const token = jwt.sign(
-               {id: validUser._id}, process.env.JWT_SECRET
+               {id: validUser._id, isAdmin: validUser.isAdmin}, process.env.JWT_SECRET
           );
           const {password: pass, ...rest} = validUser._doc;
           res.status(200).cookie('access_token', token, {
@@ -62,7 +59,7 @@ export const Google = async (req, res,next)=>{
      try{
           const user = await User.findOne({email});
           if(user){
-               const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+               const token = jwt.sign({id: user._id, isAdmin: validUser.isAdmin}, process.env.JWT_SECRET);
                const {password, ...rest} = user._doc;
                res.status(200).cookie('access_token', token, {
                     httpOnly: true,
