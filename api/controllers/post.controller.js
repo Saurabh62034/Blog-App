@@ -1,6 +1,7 @@
 import express from 'express'
 import error from '../utils/error.js'
 import Post from '../models/post.model.js';
+import User from '../models/user.model.js';
 
 
 
@@ -22,6 +23,6 @@ export const Create = async (req, res, next)=>{
         res.status(201).json(savedPost);
     }
     catch(e){
-        console.log(e);
+        return next(e);
     }
 };

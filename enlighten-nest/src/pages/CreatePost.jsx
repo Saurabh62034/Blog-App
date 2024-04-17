@@ -6,16 +6,17 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import {useNavigate} from 'react-router-dom';
 
 const CreatePost = () => {
-
+    const navigate = useNavigate();
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
-    console.log(file);
+    
     const [imageUploadProgress,setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
-    
+    const [publishError, setPublishError] = useState(null);
 
     const handleImageUpload = async ()=>{
         try{
@@ -43,7 +44,7 @@ const CreatePost = () => {
                         setImageUploadProgress(null);
                         setImageUploadError(null);
                         setFormData({...formData, image: downloadURL});
-                        console.log(formData.image);
+                        
                     });
                 }
             );
@@ -51,18 +52,43 @@ const CreatePost = () => {
         catch(error){
             setImageUploadError('Image upload failed');
             setImageUploadProgress(null);
-            console.log(error);
+            
         }
         
+    }
+
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
+        console.log("publish clicked", publishError);
+        try{
+            const res= await fetch('/api/post/create',{
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            const data = await res.json();
+            if(!res.ok){
+                setPublishError(data.message);
+            }
+            if(res.ok){
+                setPublishError(null);
+                navigate(`/post/${data.slug}`);
+            }
+        }
+        catch(e){
+            setPublishError('Something went wrong');
+        }
     }
 
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-bold'>Create a Post</h1>
-        <form className='flex flex-col gap-4'>
+        <form className='flex flex-col gap-4' name='create-post' onSubmit={handleSubmit}>
             <div className='flex flex-col gap-4 sm:flex-row justify-between'>
-                <TextInput type='text' placeholder='Title' required id='title' className='flex-1'></TextInput>
-                <Select>
+                <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e)=>setFormData({...formData, title: e.target.value})}></TextInput>
+                <Select onChange={(e)=>setFormData({...formData, category: e.target.value})}>
                     <option value="uncategorized">Select a category</option>
                     <option value="Javascript">Javascript</option>
                     <option value='React.Js'>React.Js</option>
@@ -91,9 +117,10 @@ const CreatePost = () => {
             {
                 formData.image && <img src={formData.image}></img>
             }
-            <ReactQuill theme='snow' placeholder='Write your content...' className='h-80 mb-12' required></ReactQuill>
+            <ReactQuill theme='snow' placeholder='Write your content...' className='h-80 mb-12' required onChange={(value)=>setFormData({...formData, content: value})}></ReactQuill>
             
-            <Button type='submit' gradientDuoTone='purpleToPink'>Publish</Button>
+            <Button type='submit' gradientDuoTone='purpleToPink' >Publish</Button>
+            {publishError && <Alert color='failure'>{publishError}</Alert>}
             
         </form>
     </div>
