@@ -61,7 +61,7 @@ const CreatePost = () => {
         e.preventDefault();
         console.log("publish clicked", publishError);
         try{
-            const res= await fetch('/api/post/create',{
+            const res= await fetch('/api/posts/create',{
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
