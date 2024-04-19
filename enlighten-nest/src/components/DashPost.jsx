@@ -1,15 +1,18 @@
-import { Table } from 'flowbite-react';
+import { Button, Modal, Table } from 'flowbite-react';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import {useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
+import {HiOutlineExclamationCircle} from 'react-icons/hi';
 
 const DashPost = () => {
-  var x=0;
+  const [requiredPost, setRequiredPost] = useState(null);
+  const [showModel, setShowModel] = useState(false);
   const {currentUser} = useSelector((state)=>state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] =useState(true);
   console.log("user posts", userPosts);
+  console.log("required post",requiredPost);
   useEffect(()=>{
     const fetchPosts = async()=>{
 
@@ -30,7 +33,7 @@ const DashPost = () => {
     }
     if(currentUser.isAdmin){ fetchPosts();
       }
-  },[currentUser._id]);
+  },[currentUser._id, userPosts.length]);
 
 const ShowMore = async ()=>{
   const startIndex = userPosts.length;
@@ -47,6 +50,27 @@ const ShowMore = async ()=>{
   }
   catch(e){
 
+  }
+}
+
+const handleDeletePost = async ()=>{
+  setShowModel(false);
+  try{
+    const res = await fetch(`/api/posts/deletePost/${requiredPost}/${currentUser._id}`,
+  {
+    method: 'DELETE',
+  });
+  const data = await res.json();
+  if(!res.ok){
+    console.log(data.message);
+  }
+  else{
+    setUserPosts((prev)=>prev.filter((post)=>post._id !==requiredPost))
+    console.log("user data after delete: ",userPosts)
+  }
+  }
+  catch(e){
+    console.log(e)
   }
 }
 
@@ -95,7 +119,8 @@ const ShowMore = async ()=>{
                     </Table.Cell>
                     <Table.Cell  as='div'>{post.category}</Table.Cell>
                     <Table.Cell  as='div'>
-                      <span  className='text-red-500 hover:underline cursor-pointer'>Delete</span>
+                      <span  className='text-red-500 hover:underline cursor-pointer' onClick={()=>{setShowModel(true);
+                      setRequiredPost(post._id)}}>Delete</span>
                     </Table.Cell>
                     <Table.Cell  as='div'>
                       <Link to={`/update-post/${post._id}`}>
@@ -117,8 +142,23 @@ const ShowMore = async ()=>{
         <p>
           you don't have any posts yet.
         </p>
-        )
-      
-}</div>;
+        )}
+  <Modal show={showModel} onClose={()=>setShowModel(false)} popup size="md">
+          <Modal.Header />
+          <Modal.Body>
+            <div className='text-center'>
+              <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark: text-gray-200 mx-auto mb-4' />
+              <h3 className='mb-5 mx-auto text-lg'>Are you sure, you want to delete this post?</h3>
+              <div className='flex justify-center gap-4'>
+                <Button color='failure' onClick={handleDeletePost}>Yes</Button>
+
+                <Button color='blue' onClick={()=>setShowModel(false)}>No</Button>
+                
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer />
+        </Modal>
+</div>;
 }
 export default DashPost
