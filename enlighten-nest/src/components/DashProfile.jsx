@@ -46,8 +46,10 @@ service firebase.storage {
 
   const handleImageChange = (e)=>{
     const file = e.target.files[0]
+    console.log("file image = ",file)
     setImageFile(file);
     setImageFileURL(URL.createObjectURL(file));
+    console.log("imagefile url = ",imageFileURL)
   }
 
   useEffect(()=>{
@@ -62,12 +64,12 @@ service firebase.storage {
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, imageFile)
+    console.log("upload task = ",uploadTask);
     uploadTask.on(
       'state_changed',
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes)*100;
         setImageUploadProgress(progress.toFixed(0));
-        
       },
       (error)=>{
         setImageUploadError('Could not upload image');
@@ -81,12 +83,11 @@ service firebase.storage {
           setImageFileURL(downloadURL);
           setFormData({...formData, profilePic: downloadURL});
         })
-        
       })
   }
 
   const handleChange = (e)=>{
-    setFormData({...formData, [e.target.id]: e.target.value})
+    setFormData({...formData, [e.target.id]: e.target.value});
     console.log(Object.keys(formData));
   }
   console.log("form data = "+Object.keys(formData), formData.profilePic);
@@ -187,7 +188,7 @@ service firebase.storage {
           <img src={imageFileURL || currentUser.profilePic} alt='user' className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageUploadProgress && imageUploadProgress<100 && 'opacity-60'}`}></img> 
         </div>
         {imageUploadError && <Alert color='failure'>{imageUploadError}</Alert>}
-
+            {console.log("imagefile url = ",imageFileURL)}
         <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} onChange={handleChange} />
 
         <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} />

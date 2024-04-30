@@ -28,6 +28,7 @@ const CreatePost = () => {
             const fileName = new Date().getTime() + '-' + file.name;
             const storageRef = ref(storage, fileName);
             const uploadTask = uploadBytesResumable(storageRef, file);
+            console.log("upload task = ", uploadTask);
             uploadTask.on(
                 'state_changed',
                 (snapshot)=>{
@@ -44,7 +45,6 @@ const CreatePost = () => {
                         setImageUploadProgress(null);
                         setImageUploadError(null);
                         setFormData({...formData, image: downloadURL});
-                        
                     });
                 }
             );
@@ -52,14 +52,12 @@ const CreatePost = () => {
         catch(error){
             setImageUploadError('Image upload failed');
             setImageUploadProgress(null);
-            
         }
-        
     }
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
-        console.log("publish clicked", publishError);
+        console.log("publish clicked");
         try{
             const res= await fetch('/api/posts/create',{
                 method: 'POST',
@@ -95,7 +93,7 @@ const CreatePost = () => {
                     <option value='Node.Js'>Node.Js</option>
                 </Select>
             </div>
-            <div className='flex gap-4 items-center justify-betwen border-2 border-teal-500 border-dotted p-3'>
+            <div className='flex gap-4 items-center justify-between border-2 border-teal-500 border-dotted p-3'>
                 <FileInput type='file' accept='image/*' onChange={(e)=>setFile(e.target.files[0])} />
 
                 

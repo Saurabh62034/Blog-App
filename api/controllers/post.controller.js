@@ -1,12 +1,12 @@
 import express from 'express'
 import error from '../utils/error.js'
 import Post from '../models/post.model.js';
-import User from '../models/user.model.js';
+
 
 
 
 export const Create = async (req, res, next)=>{
-    console.log("post route"+req.user);
+    console.log("post route",req.user);
     if(!req.user.isAdmin){
         return next(error(403, 'you are not allowed to create post'));
     }
@@ -29,6 +29,7 @@ export const Create = async (req, res, next)=>{
 
 export const getposts = async (req, res, next)=>{
     try{
+        console.log("getPosts: req.query.postId: ",req.query.postId)
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;
         const sortDirection = req.query.order === 'asc'? 1 : -1;
@@ -83,4 +84,26 @@ export const deletePost = async (req, res, next)=>{
         
         next(e)
     }
+}
+
+export const updatePost = async (req,res,next)=>{
+   if(!req.user.isAdmin || req.user.id != req.params.userId){
+    return next(error(403, 'You are not allowed to update this post'))
+   }
+   try{
+    const updatedPost = await Post.findByIdAndUpdate(req.params.postId,{
+        $set: {
+            content: req.body.content,
+            title: req.body.title,
+            image: req.body.image,
+            category: req.body.category,
+        },
+     },{new: true});
+    res.status(200).json(updatedPost);
+   }
+   catch(e){
+    next(e);
+   }
+    
+    
 }

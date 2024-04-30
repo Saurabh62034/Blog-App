@@ -1,6 +1,6 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import React from 'react';
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useNavigate, useLocation} from 'react-router-dom';
 import {AiOutlineSearch} from 'react-icons/ai';
 import { useState } from 'react';
 import {FaMoon, FaSun} from 'react-icons/fa';
@@ -16,6 +16,7 @@ const Header = () => {
     const [searchbar, setSearch] = useState(false);
     const {currentUser} = useSelector(state => state.user);
     const {theme} = useSelector(state =>state.theme)
+    const navigate = useNavigate();
     const search = ()=>{
         setSearch(!searchbar);
     }
@@ -31,6 +32,7 @@ const Header = () => {
           }
           else{
             dispatch(signoutSuccess());
+            navigate('/sign-in')
           }
         }catch(e){
           console.log(e);
@@ -77,7 +79,7 @@ const Header = () => {
                     </Link>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
-                </Dropdown>
+                </Dropdown> 
             ):(
                 <Link to="/sign-in">
                 <Button
