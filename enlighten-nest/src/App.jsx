@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 import CreatePost from './pages/CreatePost';
 import AdminOnlyPrivateRoute from './components/AdminOnlyPrivateRoute';
 import UpdatePost from './pages/UpdatePost';
+import PostPage from './pages/PostPage';
 
 const App = () => {
   return (
@@ -26,13 +27,16 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
         
-        <Route path="/projects" element={<Projects />} />
+        
         <Route element={<AdminOnlyPrivateRoute />}>
           <Route path='/create-post' element={<CreatePost />}></Route>
         </Route>
         <Route element={<AdminOnlyPrivateRoute />}>
           <Route path='/update-post/:postId' element={<UpdatePost />} />
         </Route>
+
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/post/:postSlug" element={<PostPage />} />
       </Routes>
       <FooterCom />
     </BrowserRouter>

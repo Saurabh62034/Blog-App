@@ -29,7 +29,7 @@ export const Create = async (req, res, next)=>{
 
 export const getposts = async (req, res, next)=>{
     try{
-        console.log("getPosts: req.query.postId: ",req.query.postId)
+        console.log("getPost in postpage: req.query.postSlug: ",req.query.slug)
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;
         const sortDirection = req.query.order === 'asc'? 1 : -1;
@@ -87,6 +87,7 @@ export const deletePost = async (req, res, next)=>{
 }
 
 export const updatePost = async (req,res,next)=>{
+    const newslug = req.body.title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g,'-');
    if(!req.user.isAdmin || req.user.id != req.params.userId){
     return next(error(403, 'You are not allowed to update this post'))
    }
@@ -97,6 +98,7 @@ export const updatePost = async (req,res,next)=>{
             title: req.body.title,
             image: req.body.image,
             category: req.body.category,
+            slug: newslug,
         },
      },{new: true});
     res.status(200).json(updatedPost);

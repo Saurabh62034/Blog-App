@@ -17,7 +17,7 @@ const UpdatePost = ()=>{
     const [imageUploadProgress,setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [publishError, setPublishError] = useState(null);
-    const [formData, setFormData] = useState({title: '', content: '', category: '', image: null});
+    const [formData, setFormData] = useState({title: '', content: '', category: '', image: null, slug:''});
     const {content, category, title} = formData;
     const postid = useParams();
     const navigate = useNavigate();
@@ -134,7 +134,7 @@ const UpdatePost = ()=>{
             <TextInput placeholder="Title"
             className="flex-1"
             
-            onChange={(e)=>setFormData({...formData, title: e.target.value})}
+            onChange={(e)=>setFormData({...formData, title: e.target.value, slug: title})}
             value={title}
            >
 

@@ -108,12 +108,11 @@ const handleDeletePost = async ()=>{
                         <img src={post.image}
                         alt={post.title}
                         className='w-20 h-10 object-cover bg-gray-500'>
-
                         </img>
                       </Link>
                     </Table.Cell>
                     <Table.Cell  as='div'>
-                      <Link to={post.slug} className='font-medium text-gray-500 dark:text-white'>
+                      <Link to={`/post/${post.slug}`} className='font-medium text-gray-500 dark:text-white'>
                         {post.title}
                       </Link>
                     </Table.Cell>

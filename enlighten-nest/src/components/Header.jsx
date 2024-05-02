@@ -1,5 +1,5 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation} from 'react-router-dom';
 import {AiOutlineSearch} from 'react-icons/ai';
 import { useState } from 'react';
@@ -17,6 +17,8 @@ const Header = () => {
     const {currentUser} = useSelector(state => state.user);
     const {theme} = useSelector(state =>state.theme)
     const navigate = useNavigate();
+    const sideNavRef = useRef(null);
+
     const search = ()=>{
         setSearch(!searchbar);
     }
@@ -40,6 +42,23 @@ const Header = () => {
         
       }
 
+      useEffect(() => {
+        // Add event listener to the document object
+        document.addEventListener('mousedown', handleClickOutside);
+    
+        // Remove event listener when the component unmounts
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+    
+      function handleClickOutside(event) {
+        if (sideNavRef.current && !sideNavRef.current.contains(event.target)) {
+          setSearch(false);
+          console.log("clicked");
+        }
+      }
+
   return (
     <Navbar className='min-w-80 border-b-2'>
         <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -47,7 +66,7 @@ const Header = () => {
             Nest
         </Link>
         <form>
-            <TextInput type='text' placeholder='search...' 
+            <TextInput ref={sideNavRef}  type='text' placeholder='search...' 
             rightIcon={AiOutlineSearch}
             className={searchbar?'block' : 'hidden md:block'}></TextInput>
         </form>
