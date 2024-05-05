@@ -60,7 +60,7 @@ const Header = () => {
       }
 
   return (
-    <Navbar className='min-w-80 border-b-2'>
+    <Navbar className='sticky top-0 w-full min-w-80 border-b-2 z-50 min-h-10'>
         <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
             <span className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Enlighten</span>
             Nest

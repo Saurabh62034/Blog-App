@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import userrouter from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import postRoutes from './routes/post.route.js';
+import commentRoute from './routes/comment.route.js'
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.listen(3000, ()=>{
 app.use("/api/user",userrouter);
 app.use("/api/auth",authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comment", commentRoute);
 
 
 app.use((err, req, res, next) =>{
