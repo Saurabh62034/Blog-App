@@ -36,6 +36,7 @@ const CommentSection = ({postId}) => {
         }
 
         try{
+            
         const res = await fetch('/api/comment/createcomment', {
             method: 'POST',
             headers: {
@@ -56,6 +57,33 @@ const CommentSection = ({postId}) => {
         setCommentError(e.message);
     }
     };
+
+    const handleLike = async (commentId)=>{
+        try{
+            if(!currentUser){
+                Navigate('/sign-in');
+                return;
+            }
+            const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+                method: 'PUT'
+            })
+            if(res.ok){
+                const data = await res.json();
+                console.log("data for comment = ",data);
+                setComments(comments.map((comment)=>
+                    comment._id === commentId ? {
+                        ...comment,
+                        likes: data.likes,
+                        numberOfLikes: data.likes.length,
+
+                    } : comment
+                ))
+            }
+        }
+        catch(e){
+            console.log(e.message);
+        }
+    }
 
   return (
     <div>
@@ -113,7 +141,7 @@ const CommentSection = ({postId}) => {
             {
                 comments.map((comment)=>(
                     <Comment key={comment._id}
-                    comment={comment}></Comment>
+                    comment={comment} onLike={handleLike}></Comment>
                     
                 ))
             }

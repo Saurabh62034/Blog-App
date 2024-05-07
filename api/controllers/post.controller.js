@@ -6,7 +6,7 @@ import Post from '../models/post.model.js';
 
 
 export const Create = async (req, res, next)=>{
-    console.log("post route",req.user);
+    
     if(!req.user.isAdmin){
         return next(error(403, 'you are not allowed to create post'));
     }
@@ -29,7 +29,8 @@ export const Create = async (req, res, next)=>{
 
 export const getposts = async (req, res, next)=>{
     try{
-        console.log("getPost in postpage: req.query.postSlug: ",req.query.slug)
+        console.log(req.user);
+        
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;
         const sortDirection = req.query.order === 'asc'? 1 : -1;
@@ -87,7 +88,9 @@ export const deletePost = async (req, res, next)=>{
 }
 
 export const updatePost = async (req,res,next)=>{
+    
     const newslug = req.body.title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g,'-');
+
    if(!req.user.isAdmin || req.user.id != req.params.userId){
     return next(error(403, 'You are not allowed to update this post'))
    }
