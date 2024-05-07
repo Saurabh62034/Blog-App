@@ -108,7 +108,7 @@ const handleDeleteUser = async ()=>{
                     <Table.Cell as='div'>
                         <img src={user.profilePic}
                         alt={user.username}
-                        className='w-20 h-10 object-cover bg-gray-500 rounded-full'>
+                        className='w-10 h-10 object-cover bg-gray-500 rounded-full'>
 
                         </img>
                       
