@@ -1,6 +1,6 @@
 import React from 'react'
 import {Sidebar} from 'flowbite-react';
-import {HiAnnotation, HiArrowSmRight, HiDocumentDuplicate, HiDocumentText, HiOutlineUserGroup, HiUser} from 'react-icons/hi';
+import {HiAnnotation, HiArrowSmRight, HiChartPie, HiDocumentDuplicate, HiDocumentText, HiOutlineUserGroup, HiUser} from 'react-icons/hi';
 import {Link, useLocation} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { signoutSuccess } from '../redux/user/userSlice';
@@ -37,9 +37,14 @@ const DashSidebar = () => {
         
       }
   return (
-    <Sidebar className='w-full md:w-56'>
+    <Sidebar className='w-full sm:w-56'>
         <Sidebar.Items>
             <Sidebar.ItemGroup className='flex flex-col gap-1'>
+              {currentUser && currentUser.isAdmin && (
+                <Sidebar.Item href="/dashboard?tab=dash" active={tab==='dash' || !tab} icon={HiChartPie}>
+                  Dashboard
+                </Sidebar.Item>
+              )}
                 
                 <Sidebar.Item href="/dashboard?tab=profile" active={tab==='profile'} icon={HiUser} label={currentUser.isAdmin? 'Admin':'User'} labelColor='dark' className="cursor-pointer">
                     Profile
@@ -65,8 +70,6 @@ const DashSidebar = () => {
 
                   </>
                 )}
-                
-                
                 <Sidebar.Item icon={HiArrowSmRight} labelColor='dark' className="cursor-pointer" onClick={handleSignout}>
                     Sign Out
                 </Sidebar.Item>
