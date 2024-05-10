@@ -79,7 +79,7 @@ const CreatePost = () => {
             setPublishError('Something went wrong');
         }
     }
-
+    console.log(formData.category)
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-bold'>Create a Post</h1>
@@ -88,9 +88,9 @@ const CreatePost = () => {
                 <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e)=>setFormData({...formData, title: e.target.value})}></TextInput>
                 <Select onChange={(e)=>setFormData({...formData, category: e.target.value})}>
                     <option value="uncategorized">Select a category</option>
-                    <option value="Javascript">Javascript</option>
-                    <option value='React.Js'>React.Js</option>
-                    <option value='Node.Js'>Node.Js</option>
+                    <option value="javascript">Javascript</option>
+                    <option value='reactjs'>React.Js</option>
+                    <option value='nodejs'>Node.Js</option>
                 </Select>
             </div>
             <div className='flex gap-4 items-center justify-between border-2 border-teal-500 border-dotted p-3'>
