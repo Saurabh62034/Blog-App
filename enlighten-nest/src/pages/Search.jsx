@@ -28,13 +28,14 @@ const Search = () => {
                 ...sidebarData,
                 searchTerm: searchTermFromUrl,
                 sort: sortFromUrl,
-                category: categoryFromUrl,
+                category: categoryFromUrl!=='uncategorized' && categoryFromUrl,
             });
         }
 
         const fetchPosts = async ()=>{
             setLoading(true);
             const searchQuery = urlParams.toString();
+            
             const res = await fetch(`/api/posts/getPosts?${searchQuery}`);
             if(!res.ok){
                 setLoading(false);
@@ -55,7 +56,6 @@ const Search = () => {
         fetchPosts();
     },[location.search])
 
-console.log(sidebarData);
 
     const handleChange = (e)=>{
         if(e.target.id === 'searchTerm'){
@@ -79,7 +79,7 @@ console.log(sidebarData);
         urlParams.set('category', sidebarData.category);
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`)
-        console.log("search query = ",searchQuery)
+        
     }
 
     const handleShowMore = async ()=>{
@@ -131,14 +131,14 @@ console.log(sidebarData);
 
                 <div className='flex items-center gap-2'>
                     <label className='font-semibold'>Category:</label>
-                    <Select onChange={handleChange} value={sidebarData.category} id='category'>
+                    <Select onChange={handleChange} value={sidebarData.category ? sidebarData.category : 'uncategorized'} id='category'>
                         <option value='uncategorized'>
                             Uncategorized
                         </option>
-                        <option value='React.Js'>
+                        <option value='reactjs'>
                             React.js
                         </option>
-                        <option value='Node.Js'>
+                        <option value='nodejs'>
                             Node.js
                         </option>
                         <option value='Javascript'>
@@ -166,7 +166,9 @@ console.log(sidebarData);
                         )}
                     {
                         !loading && posts && 
-                            posts.map((post)=><PostCard key={post._id} post={post} />
+                            posts.map((post, index, array)=><PostCard key={post._id} post={post}
+                            postIndex={index}
+                            postArray={array} />
                         )
                     }
                     {

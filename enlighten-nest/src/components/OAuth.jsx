@@ -31,6 +31,7 @@ const OAuth = () => {
             if(res.ok){
                 dispatch(signInSuccess(data));
                 navigate('/');
+                console.log("sign in success")
             }
 
         } catch(error){

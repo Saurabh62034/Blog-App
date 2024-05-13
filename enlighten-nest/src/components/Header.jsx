@@ -33,6 +33,7 @@ const Header = () => {
 
     const search = ()=>{
         setSearch(!searchbar);
+        navigate('/search')
     }
 
     const handleSignout = async ()=>{
@@ -88,11 +89,11 @@ const Header = () => {
         <form onSubmit={handleSubmit}>
             <TextInput ref={sideNavRef}  type='text' placeholder='search...' 
             rightIcon={AiOutlineSearch}
-            className={searchbar?'block' : 'hidden md:block'}
+            className='hidden sm:block'
             value={searchTerm}
             onChange={(e)=>setSearchTerm(e.target.value)}></TextInput>
         </form>
-        <Button onClick={search} className={searchbar?'invisible':'w-14 h-10 visible md:invisible'}  color='gray' pill>
+        <Button onClick={search} className={searchbar?'invisible':'w-14 h-10 visible sm:invisible'}  color='gray' pill>
             <AiOutlineSearch />
         </Button>
         <div className='flex gap-2 md:order-2'>
@@ -123,7 +124,7 @@ const Header = () => {
                 </Dropdown> 
             ):(
                 <Link to="/sign-in">
-                <Button
+                <Button className='max-[360px]:h-10 max-[360px]:w-10'
                  outline
                 gradientDuoTone='purpleToBlue'>
                     Sign In

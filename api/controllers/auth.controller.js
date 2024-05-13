@@ -4,8 +4,7 @@ import jwt from "jsonwebtoken";
 import error from "../utils/error.js";
 
 const Signup = async (req,res,next)=>{
-     console.log("this is auth.controller.js    = "+req.body.email);
-     console.log(req.body);
+     
      const {username, email, password} = req.body;
      if(!email || !email || !password || email==='' || email==='' || password===''){
           next(error(400, 'All fields are required'));
@@ -54,10 +53,11 @@ export const Signin = async (req,res,next)=>{
 }
 export const Google = async (req, res,next)=>{
      const {name, email, googlephotoUrl} = req.body;
-     console.log(googlephotoUrl)
-     console.log("name ="+name);
+     
      try{
+          
           const user = await User.findOne({email});
+          const validUser = user;
           if(user){
                const token = jwt.sign({id: user._id, isAdmin: validUser.isAdmin}, process.env.JWT_SECRET);
                const {password, ...rest} = user._doc;

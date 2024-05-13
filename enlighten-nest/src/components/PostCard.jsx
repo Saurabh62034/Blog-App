@@ -1,10 +1,24 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import { setPost } from '../redux/post/PostSlice';
 
 
-const PostCard = ({post}) => {
+const PostCard = ({post, postIndex, postArray}) => {
+  const dispatch = useDispatch();
+  const data = {
+    post,
+    postIndex,
+    postArray
+  }
+
+  const handleClick = ()=>{
+   
+    dispatch(setPost(data))
+  }
+  
   return (
-    <div className='group relative w-full border border-teal-500 hover:border-2 h-[330px] overflow-hidden rounded-lg sm:w-[360px]'>
+    <div className='group relative w-full border border-teal-500 hover:border-2 h-[330px] overflow-hidden rounded-lg sm:w-[360px]' onClick={handleClick}>
         <Link to={`/post/${post.slug}`}>
             <img src={post.image} alt='post cover' className='h-[260px] w-full object-cover group-hover:h-[200px] transition-all duration-300 z-20'></img>
         </Link>

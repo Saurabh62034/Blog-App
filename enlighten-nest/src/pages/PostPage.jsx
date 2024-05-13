@@ -4,9 +4,13 @@ import {Link, useParams} from 'react-router-dom';
 import CallToAction from '../components/CallToAction';
 import CommentSection from '../components/CommentSection';
 import PostCard from '../components/PostCard';
+import { useSelector } from 'react-redux';
 
 
 const PostPage = () => {
+
+    const {postArray} = useSelector((state) =>state.currentPost);
+    const {currentIndex} = useSelector((state) =>state.currentPost)
 
     const {postSlug} = useParams();
     const [loading, setLoading] = useState(true);
@@ -17,7 +21,6 @@ const PostPage = () => {
     useEffect(()=>{
       const fetchPost = async ()=>{
         try{
-          console.log("slug = ", postSlug)
           setLoading(true);
           const res = await fetch(`/api/posts/getposts?slug=${postSlug}`, {method: 'GET'})
 
@@ -31,7 +34,6 @@ const PostPage = () => {
         if(res.ok){
           setLoading(false);
           setPost(data.posts[0]);
-          console.log("data.posts in postpage = ", data.posts);
         }
         }
         catch(e){
@@ -78,12 +80,12 @@ const PostPage = () => {
         <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
         <span className='italic'>{post && (post.content.length/1000).toFixed(0)} mins read</span>
       </div>
-      <div className='p-3 max-w-2xl mx-auto w-full post-content' dangerouslySetInnerHTML={{__html:post && post.content}}>
+      <div className='p-3 max-w-2xl mx-auto w-full post-content text-wrap ql-editor' dangerouslySetInnerHTML={{__html:post && post.content}}>
       
       </div>
 
       <div className='max-w-4xl mx-auto w-full'>
-        <CallToAction />
+        <CallToAction postArray={postArray} currentIndex={currentIndex} />
       </div>
 
       <div>
@@ -93,8 +95,10 @@ const PostPage = () => {
           <h1 className='text-xl mt-5'>Recent articles</h1>
           <div className='flex flex-wrap gap-5 mt-5 justify-center'>
             
-            {recentPost && recentPost.map((post)=>
-              <PostCard key={post._id} post={post}>
+            {recentPost && recentPost.map((post, index, array)=>
+              <PostCard key={post._id} post={post}
+                postIndex=  {index}
+                postArray = {array} >
               </PostCard>
             )}
           </div>

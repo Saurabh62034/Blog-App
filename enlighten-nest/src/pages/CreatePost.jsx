@@ -28,7 +28,7 @@ const CreatePost = () => {
             const fileName = new Date().getTime() + '-' + file.name;
             const storageRef = ref(storage, fileName);
             const uploadTask = uploadBytesResumable(storageRef, file);
-            console.log("upload task = ", uploadTask);
+            
             uploadTask.on(
                 'state_changed',
                 (snapshot)=>{
@@ -57,7 +57,7 @@ const CreatePost = () => {
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
-        console.log("publish clicked");
+        
         try{
             const res= await fetch('/api/posts/create',{
                 method: 'POST',
@@ -79,7 +79,7 @@ const CreatePost = () => {
             setPublishError('Something went wrong');
         }
     }
-    console.log(formData.category)
+    
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-bold'>Create a Post</h1>

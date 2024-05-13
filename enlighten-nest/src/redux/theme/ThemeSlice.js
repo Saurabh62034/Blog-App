@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
     theme: 'light',
+    bgimg: true
 };
 
 const themeSlice = createSlice({
@@ -9,8 +10,17 @@ const themeSlice = createSlice({
     initialState,
     reducers: {
         toggleTheme: (state) =>{
-            state.theme = state.theme === 'light'?'dark':'light';
+            if(state.theme === 'light'){
+                state.theme = 'dark';
+                state.bgimg = false;
+            }
+            else{
+                state.theme = 'light';
+                state.bgimg = true
+            }
+            
         },
+
     }
 });
 

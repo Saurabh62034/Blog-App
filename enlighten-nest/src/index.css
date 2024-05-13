@@ -40,3 +40,15 @@
 .dark .post-content a{
     color: rgb(147, 236, 246);
 }
+
+.bgimg {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+}
+.signin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

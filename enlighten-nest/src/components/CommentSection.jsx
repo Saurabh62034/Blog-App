@@ -21,7 +21,6 @@ const CommentSection = ({postId}) => {
                 const res = await fetch(`/api/comment/getPostComments/${postId}`);
                 const data = await res.json();
                 if(res.ok){
-                    console.log("get comment")
                     setComments(data);
                 }
             }
@@ -30,9 +29,10 @@ const CommentSection = ({postId}) => {
             }
         }
         getComments();
-        console.log(comments);
+        
     },[postId])
-    console.log(comments);
+    
+
     const handleSubmit = async(e)=>{
         e.preventDefault();
         if(comment.length > 200){
@@ -73,7 +73,6 @@ const CommentSection = ({postId}) => {
             })
             if(res.ok){
                 const data = await res.json();
-                console.log("data for comment = ",data);
                 setComments(comments.map((comment)=>
                     comment._id === commentId ? {
                         ...comment,
@@ -140,7 +139,7 @@ const CommentSection = ({postId}) => {
         (<div>
         <form onSubmit={handleSubmit}>
             <Textarea placeholder='Add a comment' rows={'3'} maxLength={'200'}
-            onChange={(e)=>setComment(e.target.value)} />
+            onChange={(e)=>setComment(e.target.value)} value={comment} />
                 <div className='flex justify-between mt-5'>
                     <p className='text-gray-500 text-xs'>{200-comment.length} characters remaining</p>
                     <Button outline gradientDuoTone='purpleToBlue' type='submit'>
